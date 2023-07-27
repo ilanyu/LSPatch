@@ -2,6 +2,7 @@ package org.lsposed.lspatch.loader;
 
 import static org.lsposed.lspatch.share.Constants.CONFIG_ASSET_PATH;
 import static org.lsposed.lspatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
+import static org.lsposed.lspatch.share.Constants.ORIGINAL_SIGN_APK_ASSET_PATH;
 
 import android.app.ActivityThread;
 import android.app.LoadedApk;
@@ -135,6 +136,21 @@ public class LSPApplication {
                 Files.createDirectories(originPath);
                 try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_APK_ASSET_PATH)) {
                     Files.copy(is, cacheApkPath);
+                }
+            }
+
+            Path originSignPath = Paths.get(appInfo.dataDir, "cache/lspatch/origin/");
+            Path cacheSignApkPath;
+            try (ZipFile sourceFile = new ZipFile(appInfo.sourceDir)) {
+                cacheSignApkPath = originSignPath.resolve(sourceFile.getEntry(ORIGINAL_SIGN_APK_ASSET_PATH).getCrc() + ".apk");
+            }
+
+            if (!Files.exists(cacheSignApkPath)) {
+                Log.i(TAG, "Extract original sign apk");
+                FileUtils.deleteFolderIfExists(originSignPath);
+                Files.createDirectories(originSignPath);
+                try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_SIGN_APK_ASSET_PATH)) {
+                    Files.copy(is, cacheSignApkPath);
                 }
             }
 

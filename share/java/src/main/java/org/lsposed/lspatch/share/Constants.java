@@ -6,6 +6,7 @@ public class Constants {
     final static public String LOADER_DEX_ASSET_PATH = "assets/lspatch/loader.dex";
     final static public String META_LOADER_DEX_ASSET_PATH = "assets/lspatch/metaloader.dex";
     final static public String ORIGINAL_APK_ASSET_PATH = "assets/lspatch/origin.apk";
+    final static public String ORIGINAL_SIGN_APK_ASSET_PATH = "assets/lspatch/origin_sign.apk";
 
     final static public String PATCH_FILE_SUFFIX = "-lspatched.apk";
     final static public String PROXY_APP_COMPONENT_FACTORY = "org.lsposed.lspatch.metaloader.LSPAppComponentFactoryStub";

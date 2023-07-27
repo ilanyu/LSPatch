@@ -3,6 +3,7 @@ package org.lsposed.patch;
 import static org.lsposed.lspatch.share.Constants.CONFIG_ASSET_PATH;
 import static org.lsposed.lspatch.share.Constants.LOADER_DEX_ASSET_PATH;
 import static org.lsposed.lspatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
+import static org.lsposed.lspatch.share.Constants.ORIGINAL_SIGN_APK_ASSET_PATH;
 import static org.lsposed.lspatch.share.Constants.PROXY_APP_COMPONENT_FACTORY;
 
 import com.android.tools.build.apkzlib.sign.SigningExtension;
@@ -77,6 +78,9 @@ public class LSPatch {
     @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass level. 0 (disable), 1 (pm), 2 (pm+openat). default 0")
     private int sigbypassLevel = 0;
 
+    @Parameter(names = {"-p", "--sigbypasspath"}, description = "Signature bypass apk path")
+    private String sigbypassPath;
+
     @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password")
     private List<String> keystoreArgs = Arrays.asList(null, "123456", "key0", "123456");
 
@@ -102,7 +106,8 @@ public class LSPatch {
 
     private static final ZFileOptions Z_FILE_OPTIONS = new ZFileOptions().setAlignmentRule(AlignmentRules.compose(
             AlignmentRules.constantForSuffix(".so", 4096),
-            AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096)
+            AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096),
+            AlignmentRules.constantForSuffix(ORIGINAL_SIGN_APK_ASSET_PATH, 4096)
     ));
 
     private final JCommander jCommander;
@@ -204,7 +209,12 @@ public class LSPatch {
                 throw new PatchError("Failed to register signer", e);
             }
 
-            final String originalSignature = ApkSignatureHelper.getApkSignInfo(srcApkFile.getAbsolutePath());
+            if (sigbypassPath == null) {
+                sigbypassPath = srcApkFile.getAbsolutePath();
+                logger.d("Bypass signature apk\n" + sigbypassPath);
+            }
+            dstZFile.addNestedZip((ignore) -> ORIGINAL_SIGN_APK_ASSET_PATH, new File(sigbypassPath), false);
+            final String originalSignature = ApkSignatureHelper.getApkSignInfo(sigbypassPath);
             if (originalSignature == null || originalSignature.isEmpty()) {
                 throw new PatchError("get original signature failed");
             }
