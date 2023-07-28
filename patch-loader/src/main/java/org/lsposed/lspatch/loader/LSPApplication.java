@@ -126,6 +126,12 @@ public class LSPApplication {
                 cacheApkPath = originPath.resolve(sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc() + ".apk");
             }
 
+            Path originSignPath = Paths.get(appInfo.dataDir, "cache/lspatch/origin/");
+            Path cacheSignApkPath;
+            try (ZipFile sourceFile = new ZipFile(appInfo.sourceDir)) {
+                cacheSignApkPath = originSignPath.resolve(sourceFile.getEntry(ORIGINAL_SIGN_APK_ASSET_PATH).getCrc() + ".apk");
+            }
+
             appInfo.sourceDir = cacheApkPath.toString();
             appInfo.publicSourceDir = cacheApkPath.toString();
             appInfo.appComponentFactory = config.appComponentFactory;
@@ -137,12 +143,6 @@ public class LSPApplication {
                 try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_APK_ASSET_PATH)) {
                     Files.copy(is, cacheApkPath);
                 }
-            }
-
-            Path originSignPath = Paths.get(appInfo.dataDir, "cache/lspatch/origin/");
-            Path cacheSignApkPath;
-            try (ZipFile sourceFile = new ZipFile(appInfo.sourceDir)) {
-                cacheSignApkPath = originSignPath.resolve(sourceFile.getEntry(ORIGINAL_SIGN_APK_ASSET_PATH).getCrc() + ".apk");
             }
 
             if (!Files.exists(cacheSignApkPath)) {
