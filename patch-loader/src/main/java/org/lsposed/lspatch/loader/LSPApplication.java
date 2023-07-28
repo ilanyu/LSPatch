@@ -147,8 +147,6 @@ public class LSPApplication {
 
             if (!Files.exists(cacheSignApkPath)) {
                 Log.i(TAG, "Extract original sign apk");
-                FileUtils.deleteFolderIfExists(originSignPath);
-                Files.createDirectories(originSignPath);
                 try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_SIGN_APK_ASSET_PATH)) {
                     Files.copy(is, cacheSignApkPath);
                 }
