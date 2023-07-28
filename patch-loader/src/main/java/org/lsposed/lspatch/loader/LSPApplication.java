@@ -126,10 +126,9 @@ public class LSPApplication {
                 cacheApkPath = originPath.resolve(sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc() + ".apk");
             }
 
-            Path originSignPath = Paths.get(appInfo.dataDir, "cache/lspatch/origin/");
             Path cacheSignApkPath;
             try (ZipFile sourceFile = new ZipFile(appInfo.sourceDir)) {
-                cacheSignApkPath = originSignPath.resolve(sourceFile.getEntry(ORIGINAL_SIGN_APK_ASSET_PATH).getCrc() + ".apk");
+                cacheSignApkPath = originPath.resolve(sourceFile.getEntry(ORIGINAL_SIGN_APK_ASSET_PATH).getCrc() + ".apk");
             }
 
             appInfo.sourceDir = cacheApkPath.toString();
@@ -150,6 +149,14 @@ public class LSPApplication {
                 try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_SIGN_APK_ASSET_PATH)) {
                     Files.copy(is, cacheSignApkPath);
                 }
+            }
+            
+            if (!Files.exists(cacheApkPath)) {
+                Log.i(TAG, "original apk copy error");
+            }
+
+            if (!Files.exists(cacheSignApkPath)) {
+                Log.i(TAG, "original sign apk copy error");
             }
 
             var mPackages = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mPackages");
