@@ -85,7 +85,7 @@ public class LSPApplication {
             service = new LocalApplicationService(context);
         }
 
-        disableProfile(context);
+//        disableProfile(context);
         Startup.initXposed(false, ActivityThread.currentProcessName(), service);
         Log.i(TAG, "Bootstrap Xposed");
         Startup.bootstrapXposed();
