@@ -71,11 +71,11 @@ jobs:
     - name: Build dependencies
       working-directory: libxposed
       run: |
-        cd api
+        cd api && git checkout a42f85d06eac3373d266a534ab3b31a584b30774
         echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
         ./gradlew :api:publishApiPublicationToMavenLocal
         cd ..
-        cd service
+        cd service && git checkout 4351a735755c86c031a977a62e52005b23048c4d
         echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
         ./gradlew :interface:publishInterfacePublicationToMavenLocal
 
