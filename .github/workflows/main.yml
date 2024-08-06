@@ -42,12 +42,14 @@ jobs:
       with:
         repository: libxposed/api
         path: libxposed/api
+        ref: a42f85d06eac3373d266a534ab3b31a584b30774
 
     - name: Checkout libxposed/service
       uses: actions/checkout@v3
       with:
         repository: libxposed/service
         path: libxposed/service
+        ref: 4351a735755c86c031a977a62e52005b23048c4d
 
     - name: Setup Java
       uses: actions/setup-java@v3
@@ -72,12 +74,10 @@ jobs:
       working-directory: libxposed
       run: |
         cd api
-        git checkout a42f85d06eac3373d266a534ab3b31a584b30774
         echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
         ./gradlew :api:publishApiPublicationToMavenLocal
         cd ..
         cd service
-        git checkout 4351a735755c86c031a977a62e52005b23048c4d
         echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
         ./gradlew :interface:publishInterfacePublicationToMavenLocal
 
